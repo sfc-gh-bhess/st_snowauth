@@ -29,6 +29,19 @@ on each re-run of the Streamlit. If the session is closed, it is cleared
 from the session state and the user is prompted to reauthenticate. There
 is also an option to logout (a logout button is placed in the sidebar).
 
+## Installation 
+
+You can install directly from github with this command:
+```
+pip install git+https://github.com/sfc-gh-bhess/st_snowauth.git
+```
+Note that python 3.8 is the only supported python version currently.
+
+To install directly from github via pipenv, use:
+```
+pipenv install git+https://github.com/sfc-gh-bhess/st_snowauth.git#egg=st_snowauth
+```
+
 ## Snowflake Setup
 This component works with a Snowflake OAuth for Custom Clients security integration.
 For more deatils, see the [Snowflake Documentation](https://docs.snowflake.com/en/user-guide/oauth-custom)
