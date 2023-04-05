@@ -132,3 +132,11 @@ the call to `snowauth_session()` at the top of every page. If
 the user is not logged in, they will be presented with the login
 link. Once authenticated, they will return to the main page of the
 Streamlit app.
+
+### Lower-level notes
+If you do need to test to see if the session is already cached,
+you can test it yourself directly:
+```
+if st_snowauth._STKEY in st.session_state:
+    do_something()
+```
