@@ -74,7 +74,11 @@ SELECT SYSTEM$SHOW_OAUTH_CLIENT_SECRETS( 'OAUTH_ST' );
 ```
 
 ## st_snowauth configuration
-The `snowauth_session()` function needs a configuration dictionary to function.
+The `snowauth_session()` function takes 2 optional parameters: `config` and `label`.
+The `label` is the text to use in the link presented to log in. By default, 
+the label is `Login to Snowflake`.
+
+The `snowauth_session()` function also needs a configuration dictionary to function.
 The necessary fields of the function are:
 * `account` - the Snowflake account identier
 * `authorization_endpoint` - the URL to use to get an authorization code, typically `https://<ACCOUNTID>.snowflakecomputing.com/oauth/authorize`.
@@ -83,7 +87,7 @@ The necessary fields of the function are:
 * `client_id` - the client ID, from the commands above.
 * `client_secret` - the client secret for the client ID, from the commands above
 
-If `snowauth_session()` is called without any arguments, it will look for the
+If `snowauth_session()` is called without a `config` parameter, it will look for the
 configuration parameters in the secrets file (`st.secrets`) using the default 
 name `snowauth`.
 ```
@@ -101,8 +105,9 @@ client_id = "<OAUTH CLIENT ID>"
 client_secret = "<OAUTH CLIENT SECRET>"
 ```
 
-If `snowauth_session()` is called with a string valued argument, it will look for the
-configuration parameters in the secrets file (`st.secrets`) using the supplied name.
+If `snowauth_session()` is called with a string valued `config` parameter, 
+it will look for the configuration parameters in the secrets file (`st.secrets`) 
+using the supplied name.
 ```
 session = snowauth_session('my_snowauth')
 ```
@@ -114,8 +119,8 @@ account = "<ACCOUNTID>"
 ...
 ```
 
-If `snowauth_session()` is called with a dictionary argument, it will use those as the
-parameter values.
+If `snowauth_session()` is called with a dictionary for the `config` parameter,
+it will use those as the parameter values.
 ```
 snowauth_params = {'account': ...} # Or any way to create the dictionary
 session = snowauth_session(snowauth_params)

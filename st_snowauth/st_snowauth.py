@@ -32,17 +32,17 @@ def validate_config(config):
                                 'account' ]
     return all([k in config for k in required_config_options])
 
-def show_auth_link(config):
+def show_auth_link(config, label):
     state_parameter = string_num_generator(15)
     query_params = urlencode({'redirect_uri': config['redirect_uri'], 'client_id': config['client_id'], 'response_type': 'code', 'state': state_parameter})
     request_url = f"{config['authorization_endpoint']}?{query_params}"
     if st.experimental_get_query_params():
         qpcache = qparms_cache(state_parameter)
         qpcache = st.experimental_get_query_params()
-    st.markdown(f'<a href="{request_url}" target="_self">Login to Snowflake</a>', unsafe_allow_html=True)
+    st.markdown(f'<a href="{request_url}" target="_self">{label}</a>', unsafe_allow_html=True)
     st.stop()
 
-def snowauth_session(config=None):
+def snowauth_session(config=None, label="Login to Snowflake"):
     if not config:
         config = _DEFAULT_SECKEY
     if isinstance(config, str):
@@ -53,7 +53,7 @@ def snowauth_session(config=None):
             logout()
     if _STKEY not in st.session_state:
         if 'code' not in st.experimental_get_query_params():
-            show_auth_link(config)
+            show_auth_link(config, label)
         code = st.experimental_get_query_params()['code'][0]
         state = st.experimental_get_query_params()['state'][0]
         qpcache = qparms_cache(state)
@@ -77,7 +77,7 @@ def snowauth_session(config=None):
             ret.raise_for_status()
         except requests.exceptions.RequestException as e:
             st.error(e)
-            show_auth_link(config)
+            show_auth_link(config, label)
         token = ret.json()
         st.experimental_set_query_params(**qparms)
         snow_configs = {
@@ -90,7 +90,7 @@ def snowauth_session(config=None):
             st.session_state[_STKEY] = Session.builder.configs(snow_configs).create()
         except Exception as e :
             st.error(f"Error connecting to Snowflake: \n{str(e)}")
-            show_auth_link(config)
+            show_auth_link(config, label)
 
 
     session = st.session_state[_STKEY]
