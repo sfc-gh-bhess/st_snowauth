@@ -52,6 +52,9 @@ def snowauth_session(config=None, label="Login to Snowflake"):
         if session._conn._conn.is_closed():
             logout()
     if _STKEY not in st.session_state:
+        if not validate_config(config):
+            st.error("Invalid OAuth Configuration")
+            st.stop()
         if 'code' not in st.experimental_get_query_params():
             show_auth_link(config, label)
         code = st.experimental_get_query_params()['code'][0]
@@ -61,7 +64,7 @@ def snowauth_session(config=None, label="Login to Snowflake"):
         qpcache = {}
 
         theaders = {
-                        'Authorization': 'Basic {}'.format(base64.b64encode('{}:{}'.format(config["client_id"], config["secret"]).encode()).decode()), 
+                        'Authorization': 'Basic {}'.format(base64.b64encode('{}:{}'.format(config["client_id"], config["client_secret"]).encode()).decode()), 
                         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
                     }
         tdata = {
