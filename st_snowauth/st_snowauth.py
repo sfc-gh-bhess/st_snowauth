@@ -34,7 +34,15 @@ def validate_config(config):
 
 def show_auth_link(config, label):
     state_parameter = string_num_generator(15)
-    query_params = urlencode({'redirect_uri': config['redirect_uri'], 'client_id': config['client_id'], 'response_type': 'code', 'state': state_parameter})
+    qp_dict = {
+        'redirect_uri': config['redirect_uri'], 
+        'client_id': config['client_id'], 
+        'response_type': 'code', 
+        'state': state_parameter
+    }
+    if 'role' in config:
+        qp_dict['scope'] = f"session:role:{config['role']}"
+    query_params = urlencode(qp_dict)
     request_url = f"{config['authorization_endpoint']}?{query_params}"
     if st.experimental_get_query_params():
         qpcache = qparms_cache(state_parameter)

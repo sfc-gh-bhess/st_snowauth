@@ -86,6 +86,7 @@ The necessary fields of the function are:
 * `redirect_uri` - the URL that is configured in the OAuth provider as the redirect URL (it should be the URL of the Streamlit app itself)
 * `client_id` - the client ID, from the commands above.
 * `client_secret` - the client secret for the client ID, from the commands above
+* `role` - (optional) the Snowflake role to use when making the connection. If omitted, the user's default role will be used.
 
 If `snowauth_session()` is called without a `config` parameter, it will look for the
 configuration parameters in the secrets file (`st.secrets`) using the default 
