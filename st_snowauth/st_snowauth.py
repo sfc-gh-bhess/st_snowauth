@@ -96,6 +96,8 @@ def snowauth_session(config=None, label="Login to Snowflake"):
             'authenticator': 'oauth',
             'token': token['access_token']
         }
+        if 'connection' in config:
+            snow_configs = {**snow_configs, **config['connection']}
         del token
         try:
             st.session_state[_STKEY] = Session.builder.configs(snow_configs).create()

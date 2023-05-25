@@ -12,7 +12,7 @@ st.markdown("## Snowflake OAuth")
 session = snowauth_session()
 
 st.markdown("### Who Am I?")
-st.write(session.sql("SELECT current_user() AS user, current_role() AS role").collect())
+st.write(session.sql("SELECT current_user() AS user, current_role() AS role, current_database() AS database, current_schema() AS schema").collect())
 st.markdown("### What Databases Are Here?")
 st.dataframe(pd.DataFrame(session.sql('SHOW DATABASES').collect()))
 

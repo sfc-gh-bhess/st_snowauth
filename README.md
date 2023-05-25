@@ -86,7 +86,10 @@ The necessary fields of the function are:
 * `redirect_uri` - the URL that is configured in the OAuth provider as the redirect URL (it should be the URL of the Streamlit app itself)
 * `client_id` - the client ID, from the commands above.
 * `client_secret` - the client secret for the client ID, from the commands above
+
+There are 2 optional fields
 * `role` - (optional) the Snowflake role to use when making the connection. If omitted, the user's default role will be used.
+* `connection` - (optional) a dictionary of parameters that will be passed along to the Snowpark Session builder (e.g., setting the `database` field in the `connection` dictionary would connect to Snowflake and set the database to the specified value). See the [Snowflake documentation](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-api#functions) for the options available.
 
 If `snowauth_session()` is called without a `config` parameter, it will look for the
 configuration parameters in the secrets file (`st.secrets`) using the default 
@@ -95,7 +98,7 @@ name `snowauth`.
 session = snowauth_session()
 ```
 
-The `.streamlit/secrets.toml` file would look something like this:
+The `.streamlit/secrets.toml` file could look something like this:
 ```
 [snowauth]
 account = "<ACCOUNTID>"
@@ -104,6 +107,12 @@ token_endpoint = "https://<ACCOUNTID>.snowflakecomputing.com/oauth/token-request
 redirect_uri = "<REDIRECT URI - this Streamlit's location>"
 client_id = "<OAUTH CLIENT ID>"
 client_secret = "<OAUTH CLIENT SECRET>"
+role = "<SNOWFLAKE ROLE>"
+
+[snowauth.connection]
+database = "<SNOWFLAKE DATABASE>"
+schema = "<SNOWFLAKE SCHEMA>"
+# Other optional parameters
 ```
 
 If `snowauth_session()` is called with a string valued `config` parameter, 
