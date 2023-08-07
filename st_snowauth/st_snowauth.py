@@ -1,4 +1,4 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, quote
 import requests
 import base64
 import streamlit as st
@@ -41,7 +41,7 @@ def show_auth_link(config, label):
         'state': state_parameter
     }
     if 'role' in config:
-        qp_dict['scope'] = f"session:role:{config['role']}"
+        qp_dict['scope'] = f"session:role-encoded:{quote(config['role'])}"
     query_params = urlencode(qp_dict)
     request_url = f"{config['authorization_endpoint']}?{query_params}"
     if st.experimental_get_query_params():
