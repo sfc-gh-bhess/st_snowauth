@@ -44,9 +44,9 @@ def show_auth_link(config, label):
         qp_dict['scope'] = f"session:role-encoded:{quote(config['role'])}"
     query_params = urlencode(qp_dict)
     request_url = f"{config['authorization_endpoint']}?{query_params}"
-    if st.experimental_get_query_params():
+    if len(st.query_params) > 0:
         qpcache = qparms_cache(state_parameter)
-        qpcache = st.experimental_get_query_params()
+        qpcache.update(st.query_params.to_dict())
     st.markdown(f'<a href="{request_url}" target="_self">{label}</a>', unsafe_allow_html=True)
     st.stop()
 
@@ -63,14 +63,13 @@ def snowauth_session(config=None, label="Login to Snowflake"):
         if not validate_config(config):
             st.error("Invalid OAuth Configuration")
             st.stop()
-        if 'code' not in st.experimental_get_query_params():
+        if 'code' not in st.query_params:
             show_auth_link(config, label)
-        code = st.experimental_get_query_params()['code'][0]
-        state = st.experimental_get_query_params()['state'][0]
-        qpcache = qparms_cache(state)
-        qparms = qpcache
-        qpcache = {}
-
+        code = st.query_params['code']
+        state = st.query_params['state']
+        st.query_params.clear()
+        st.query_params.update(qparms_cache(state))
+        qparms_cache(state).clear()
         theaders = {
                         'Authorization': 'Basic {}'.format(base64.b64encode('{}:{}'.format(config["client_id"], config["client_secret"]).encode()).decode()), 
                         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
@@ -90,7 +89,7 @@ def snowauth_session(config=None, label="Login to Snowflake"):
             st.error(e)
             show_auth_link(config, label)
         token = ret.json()
-        st.experimental_set_query_params(**qparms)
+
         snow_configs = {
             'account': config['account'], 
             'authenticator': 'oauth',
